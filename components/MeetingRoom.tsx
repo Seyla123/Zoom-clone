@@ -9,9 +9,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { LayoutList, Users } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import EndCallButton from "./EndCallButton";
 
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 function MeetingRoom() {
+  const searchParams = useSearchParams();
+  const isPersonalRoom = !!searchParams.get("personal");
   const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
   const [showParticipants, setShowParticipants] = useState<boolean>(false);
   const CallLayout = () => {
@@ -24,8 +28,7 @@ function MeetingRoom() {
         return <SpeakerLayout participantsBarPosition={"right"} />;
     }
   };
-  console.log('this : ', showParticipants);
-  
+
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
       <div className="relative flex size-full items-center justify-center">
@@ -63,20 +66,22 @@ function MeetingRoom() {
                 >
                   {item}
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className='border-dark-1'/>
+                <DropdownMenuSeparator className='border-dark-1' />
               </div>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <CallStatsButton/>
+        <CallStatsButton />
         <button
-        onClick={() => setShowParticipants((prev)=>!prev)} >
+          onClick={() => setShowParticipants((prev) => !prev)} >
           <div className="cursor-pointer rounded-full 
               bg-[#19232d] px-3 py-3 hover:bg-[#4c535b]">
-            <Users size={20} className="text-white"/>
+            <Users size={20} className="text-white" />
           </div>
         </button>
-
+        {
+          !isPersonalRoom && <EndCallButton/>
+        }
       </div>
     </section>
   );
