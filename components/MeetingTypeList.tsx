@@ -131,9 +131,7 @@ function MeetingTypeList() {
                 buttonText="Start Meeting"
                 className="text-center"
                 handleClick={createMeeting}
-            >
-                dfasfd
-            </MeetingModal>
+            />
         </section>
     );
 }
