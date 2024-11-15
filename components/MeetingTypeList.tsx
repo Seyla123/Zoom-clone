@@ -24,7 +24,6 @@ function MeetingTypeList() {
     })
 
     const createMeeting = async () => {
-        console.log("click createMeeting");
         if (!user || !client) return;
         if(!values.dataTime){
             toast({
