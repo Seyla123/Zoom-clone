@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 function useGetCallById(id : string | string[]){
     const [call, setCall] = useState<Call>()
-    const [isCalling, setIsCallLoading] = useState<boolean>(true)
+    const [isCallLoading, setIsCallLoading] = useState<boolean>(true)
 
     const client = useStreamVideoClient();
     useEffect(()=>{
@@ -29,7 +29,7 @@ function useGetCallById(id : string | string[]){
         loadCall();
     },[id, client])
 
-    return { call, setIsCallLoading }
+    return { call, isCallLoading }
 }
 
 export default useGetCallById
