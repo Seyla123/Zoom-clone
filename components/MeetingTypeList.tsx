@@ -6,51 +6,66 @@ import { useRouter } from "next/navigation";
 import MeetingModal from "./MeetingModal";
 import { useUser } from "@clerk/nextjs";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { useToast } from "@/hooks/use-toast"
 
 function MeetingTypeList() {
     const router = useRouter();
+    const { toast } = useToast()
+
     const [meetingState, setMeetingState] = useState<
-        "isScheduleMeeting" | "isJoiningMeeting" | "isInstantMeeting" | undefined
-    >();
+        "isScheduleMeeting" | "isJoiningMeeting" | "isInstantMeeting" | undefined>();
     const { user } = useUser()
     const client = useStreamVideoClient();
+    const [callDetails, setCallDetails] = useState<Call>()
     const [values, setValues] = useState({
         dataTime: new Date(),
         description: '',
-        link:''
+        link: ''
     })
-    const [callDetails, setCallDetails] =useState<Call>()
-
 
     const createMeeting = async () => {
         console.log("click createMeeting");
-        if(!user || !client) return;
+        if (!user || !client) return;
+        if(!values.dataTime){
+            toast({
+                title: 'Fail to create a meeting',
+                description: `Please select a date`,
+                variant: "destructive",
+            })
+            return
+        }
 
         try {
             const id = crypto.randomUUID();
-            const call  = client.call('default', id);
+            const call = client.call('default', id);
 
-            if(!call) throw new Error('Failed to create call');
+            if (!call) throw new Error('Failed to create call');
 
             const startsAt = values.dataTime.toISOString() || new Date(Date.now()).toISOString();
             const description = values.description || 'Instant meeting';
 
             await call.getOrCreate({
-                data : {
-                    starts_at : startsAt,
-                    custom : {
+                data: {
+                    starts_at: startsAt,
+                    custom: {
                         description
                     }
                 }
             })
             setCallDetails(call);
+            toast({
+                title: 'Meeting created successfully',
+            })
 
-            if(!values.description) {
+            if (!values.description) {
                 router.push(`/meeting/${call.id}`);
             }
         } catch (error) {
             console.log('this is an error : ', error);
-            
+            toast({
+                title: 'Fail to create a meeting',
+            })
+
         }
     };
 
