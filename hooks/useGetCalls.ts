@@ -50,7 +50,7 @@ function useGetCalls() {
     return {
         endedCalls,
         upcomingCalls,
-        recordings: calls,
+        callRecordings: calls,
         isLoading
     };
 }
