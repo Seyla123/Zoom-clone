@@ -1,6 +1,6 @@
 
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MeetingCard from './MeetingCard';
 import useGetCalls from '@/hooks/useGetCalls';
 import { useRouter } from 'next/navigation';
@@ -21,7 +21,7 @@ function CallList({ type }: CallListProps) {
             case 'upcoming':
                 return upcomingCalls;
             case 'recordings':
-                return callRecordings;
+                return recordings;
             default:
                 return [];
         }
@@ -54,16 +54,23 @@ function CallList({ type }: CallListProps) {
     const calls = getCalls();
     const noCallsMessage = getNoCallsMessage();
     const icon = getIcon();
-    const clickOn = () => {
-        console.log('sdfas');
-    }
-    if (isLoading) return <Loader />
-    if (calls) {
-        calls.map((meeting: Call | CallRecording) => {
-            console.log(meeting);
 
-        })
-    }
+    useEffect(()=>{
+       const fetchRecordings = async()=>{
+        const callData = await Promise.all(callRecordings.map((meeting: Call) => {
+            return meeting.queryRecordings();
+        }));
+
+        const recordings = callData
+        .filter(call => call.recordings.length > 0)
+        .flatMap(call => call.recordings)
+
+        setRecordings(recordings);
+       } 
+       fetchRecordings();
+    },[type, callRecordings])
+    if (isLoading) return <Loader />
+
     return (
         <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
             {
@@ -72,9 +79,9 @@ function CallList({ type }: CallListProps) {
                     return (
                         <MeetingCard
                             key={meetingItem.id}
-                            title={meetingItem.state.custom.description.substring(0, 26) || 'No description'}
-                            date={meetingItem.state.startsAt?.toLocaleDateString()
-                                || meetingItem.start_time.toLocaleDateString()
+                            title={meetingItem.state?.custom.description.substring(0, 26) || 'No description'}
+                            date={meetingItem.state?.startsAt?.toLocaleDateString()
+                                || meetingItem?.start_time.toLocaleDateString()
                             }
                             isPreviousMeeting={type === 'ended'}
                             icon={icon}
