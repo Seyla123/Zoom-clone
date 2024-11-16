@@ -5,6 +5,11 @@ export const sidebarLinks = [
         imgUrl:'/icons/home.svg'
     },
     {
+        label:'Upcoming',
+        route:'/upcoming',
+        imgUrl:'/icons/upcoming.svg'
+    },
+    {
         label:'Previous',
         route:'/previous',
         imgUrl:'/icons/previous.svg'
