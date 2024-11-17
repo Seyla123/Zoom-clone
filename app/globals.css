@@ -38,6 +38,10 @@ body {
 }
 .cl-userButtonPopoverActionButton {
   color: white;
+  transition: all 0.2s ease-in-out;
+}
+.cl-userButtonPopoverActionButton:hover {
+  background: #565761;
 }
 
 @layer utilities{
