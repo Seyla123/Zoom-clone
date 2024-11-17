@@ -107,8 +107,8 @@ function CallList({ type }: CallListProps) {
                         <MeetingCard
                             key={`${meetingItem.id}+${index}`}
                             title={
-                                meetingItem.state?.custom.description.substring(0, 26) || meetingItem?.filename.substring(0, 26) ||
-                                "No description"
+                                meetingItem.state?.custom?.description?.substring(0, 26) || meetingItem?.filename?.substring(0, 26) ||
+                                "Personal Meeting"
                             }
                             date={
                                 meetingItem.state?.startsAt?.toLocaleDateString() || new Date(meetingItem?.start_time).toLocaleDateString()|| "No date"
