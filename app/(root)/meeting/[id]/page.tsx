@@ -12,7 +12,7 @@ function Meeting({ params }: { params: Promise<{ id: string }> }) {
     // Use React's `use` to unwrap the promise
     const resolvedParams = use(params);
 
-    const { user, isLoaded } = useUser();
+    const { isLoaded } = useUser();
     const [isSetupCompleted, setIsSetupCompleted] = useState<boolean>(false);
     const { call, isCallLoading } = useGetCallById(resolvedParams.id);
 

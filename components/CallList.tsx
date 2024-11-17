@@ -8,7 +8,7 @@
  * <CallList type="ended" />
  */
 "use client";
-
+//@typescript-eslint/no-unused-vars
 import { useEffect, useState } from "react";
 import MeetingCard from "./MeetingCard";
 import useGetCalls from "@/hooks/useGetCalls";
@@ -88,12 +88,14 @@ function CallList({ type }: CallListProps) {
                 toast({
                     title: "Error, Try again later ",
                 })
+                console.error(error);
+
             } finally {
                 setIsRecordLoading(false);
             }
         };
         fetchRecordings();
-    }, [type, callRecordings]);
+    }, [type, callRecordings, toast]);
 
 
     if (isLoading || isRecordLoading) return <Loader />;
@@ -103,15 +105,16 @@ function CallList({ type }: CallListProps) {
             {calls && calls.length > 0 ? (
                 calls.map((meeting: Call | CallRecording, index) => {
                     const meetingItem = meeting as Call;
+                    
                     return (
                         <MeetingCard
                             key={`${meetingItem.id}+${index}`}
                             title={
-                                meetingItem.state?.custom?.description?.substring(0, 26) || meetingItem?.filename?.substring(0, 26) ||
+                                meetingItem.state?.custom?.description?.substring(0, 26) || (meeting as CallRecording)?.filename?.substring(0, 26) ||
                                 "Personal Meeting"
                             }
                             date={
-                                meetingItem.state?.startsAt?.toLocaleDateString() || new Date(meetingItem?.start_time).toLocaleDateString()|| "No date"
+                                meetingItem.state?.startsAt?.toLocaleDateString() || new Date((meeting as CallRecording)?.start_time).toLocaleDateString() || "No date"
                             }
                             isPreviousMeeting={type === "ended"}
                             icon={icon}
@@ -121,12 +124,12 @@ function CallList({ type }: CallListProps) {
                             buttonText={type === "recordings" ? "Play" : "Start"}
                             handleClick={
                                 type === "recordings"
-                                    ? () => router.push(`${meetingItem.url}`)
+                                    ? () => router.push(`${(meeting as CallRecording).url}`)
                                     : () => router.push(`/meeting/${meetingItem.id}`)
                             }
                             link={
                                 type === "recordings"
-                                    ? `${meetingItem.url}`
+                                    ? `${(meeting as CallRecording).url}`
                                     : `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${meetingItem.id}`
                             }
                         />
