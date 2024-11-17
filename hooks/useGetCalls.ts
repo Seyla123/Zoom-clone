@@ -25,7 +25,7 @@ function useGetCalls() {
                             { created_by_user_id: user.id },
                             { members: { $in: [user.id] } }
                         ]
-                    }
+                    },
                 });
                 setCalls(calls);
             } catch (error) {
